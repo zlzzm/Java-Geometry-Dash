@@ -1,5 +1,5 @@
 public class Player {
-  float playerY, playerX, jumpForce, doubleJumpForce, gravity, velocity;
+  float playerY, playerX, jumpForce, doubleJumpForce, gravity, velocity, restrictY;
   boolean jumping, doubleJump;
 
   public void initialize() {
@@ -11,13 +11,14 @@ public class Player {
     velocity = 0;
     jumping = false;
     doubleJump = false;
+    restrictY = 450;
   }
 
   public void show() {
     velocity += gravity;
     playerY += velocity;
 
-    if (playerY >= 450) {
+    if (playerY >= restrictY) {
       playerY = 450;
       velocity = 0;
       jumping = false;
