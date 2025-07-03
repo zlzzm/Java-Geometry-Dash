@@ -1,0 +1,70 @@
+public class Enemy {
+  int numEnemies = 5;
+  float[] enemyX;
+  float[] enemyY;
+  int[] spawnDelay;
+  int[] spawnTimer;
+  boolean[] scored;
+  float objectSpeed;
+  // Player position needs to be passed or accessed externally for collision detection
+  float playerX;
+  float playerY;
+
+  // Constructor (called when you create a new Enemy object)
+  public Enemy(float objectSpeed) {
+    scored = new boolean[numEnemies];
+    for (int i = 0; i < numEnemies; i++) {
+      scored[i] = false;
+    }
+    this.objectSpeed = objectSpeed;
+
+    enemyX = new float[numEnemies];
+    enemyY = new float[numEnemies];
+    spawnDelay = new int[numEnemies];
+    spawnTimer = new int[numEnemies];
+
+    // Initialize enemy positions and spawn timers
+    for (int i = 0; i < numEnemies; i++) {
+      enemyX[i] = width + i * 300 + int(random(100));
+      enemyY[i] = 450;
+      spawnDelay[i] = int(random(30, 120));
+      spawnTimer[i] = spawnDelay[i];
+    }
+  }
+
+  // Update player position (call this every frame to update collision checks)
+  public void updatePlayerPosition(float px, float py) {
+    playerX = px;
+    playerY = py;
+  }
+
+  // This method must be called inside draw()
+  public void show() {
+    for (int i = 0; i < numEnemies; i++) {
+      if (spawnTimer[i] <= 0) {
+        enemyX[i] -= objectSpeed;
+      } else {
+        spawnTimer[i]--;
+      }
+
+      if (enemyX[i] < -50) {
+        enemyX[i] = width + int(random(200, 600));
+        spawnTimer[i] = int(random(30, 120));
+        scored[i] = false; // ✅ Reset scored flag when enemy resets
+      }
+      // Simple collision check
+      if (enemyX[i] < playerX + 50 &&
+        enemyX[i] + 50 > playerX &&
+        enemyY[i] == playerY) {
+        lose();
+      }
+      if (enemyX[i] == playerX + 50) {
+        score += 1;
+      }
+
+      // Draw enemy as a triangle
+      fill(255, 0, 0);
+      triangle(enemyX[i], 500, enemyX[i] + 25, 450, enemyX[i] + 50, 500);
+    }
+  }
+}
