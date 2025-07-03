@@ -1,0 +1,50 @@
+Player player;
+Enemy enemies;
+Orb orb;
+float objectSpeed = 10;
+int score = 0;
+
+void setup() {
+  size(900, 500);
+  player = new Player();
+  player.initialize();
+
+  enemies = new Enemy(objectSpeed);
+  orb = new Orb(objectSpeed);  // ✅ Add this line
+}
+
+void draw() {
+  for (int i = 0; i < enemies.numEnemies; i++) {
+    if (!enemies.scored[i] && enemies.enemyX[i] < player.playerX) {
+      score += 1;
+      enemies.scored[i] = true;  // mark as scored so it doesn't score again
+    }
+  }
+  background(0);
+  player.show();
+  enemies.updatePlayerPosition(player.playerX, player.playerY);
+  enemies.show();
+  fill(0);
+  orb.show();
+  orb.updatePlayerPos(player.playerX, player.playerY);
+  fill(255, 0, 0);
+  textSize(200);
+  text(score, 10, 200);
+}
+
+void keyPressed() {
+  if (key == ' ') {
+    player.jump();
+  } else if (keyCode == UP) {
+    player.doubleJump();
+  }
+}
+
+void lose() {
+  background(0);
+  background(0);
+  textSize(200);
+  fill(255);
+  text("You lose", 100, 200);
+  noLoop();
+}
