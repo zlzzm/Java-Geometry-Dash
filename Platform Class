@@ -1,0 +1,43 @@
+class Platforms {
+  Player player;
+  float[] platX;
+  float[] platY;
+  float platSpeed;
+  int platNum;
+  private float playerX;
+  private float playerY;
+
+  Platforms(float platSpeed) {
+    this.platSpeed = platSpeed;
+    platNum = 5;
+    platX = new float[platNum];
+    platY = new float[platNum];
+
+    for (int i = 0; i < platNum; i++) {
+      platX[i] = width + i * 300 + int(random(100));
+      platY[i] = 490;
+    }
+  }
+
+  void show(float rectWidth, float rectHeight) {
+    fill(0, 0, 255);
+    for (int i = 0; i < platNum; i++) {
+      platX[i] -= platSpeed;
+      rect(platX[i], platY[i], rectWidth, rectHeight);
+    }
+  }
+  void updatePlayerPos() {
+    playerX = player.playerX;
+    playerY = player.playerY;
+  }
+  void playerCheck() {
+    for (int i = 0; i == platNum; i++)
+    {
+      updatePlayerPos();
+      if (playerX + 50 >= platX[i] && playerY == platY[i])
+      {
+        player.restrictY = platY[i];
+      }
+    }
+  }
+}
