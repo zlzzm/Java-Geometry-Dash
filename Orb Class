@@ -1,0 +1,57 @@
+public class Orb {
+  int numOrb = 5;
+  float[] orbX;
+  float[] orbY;
+  int[] orbSpawnDelay;
+  int[] orbSpawnTimer;
+  float orbSpeed;
+  float playerX;
+  float playerY;
+
+  public Orb(float orbSpeed) {
+    orbX = new float[numOrb];
+    orbY = new float[numOrb];
+    orbSpawnDelay = new int[numOrb];
+    orbSpawnTimer = new int[numOrb];
+    this.orbSpeed = orbSpeed;
+
+    for (int i = 0; i < numOrb; i++) {
+      orbX[i] = width + i * 300 + int(random(100));
+      orbY[i] = 450;
+      orbSpawnDelay[i] = int(random(30, 120));
+      orbSpawnTimer[i] = orbSpawnDelay[i];
+    }
+  }
+
+  void show() {
+    fill(255, 255, 255);
+    for (int i = 0; i < numOrb; i++) {
+      if (orbSpawnTimer[i] <= 0) {
+        orbX[i] -= orbSpeed;
+      } else {
+        orbSpawnTimer[i]--;
+      }
+
+      // Reset orb if it goes off screen
+      if (orbX[i] < -50) {
+        orbX[i] = width + int(random(200, 600));
+        orbSpawnTimer[i] = int(random(30, 120));
+      }
+
+      circle(orbX[i], orbY[i], 10);
+    }
+  }
+
+  void updatePlayerPos(float px, float py) {
+    playerX = px;
+    playerY = py;
+  }
+
+  void orbBoost(Player player) {
+    for (int i = 0; i < numOrb; i++) {
+      if (playerX + 50 >= orbX[i] && playerX <= orbX[i] + 50 && playerY == orbY[i]) {
+        player.velocity = -10; // Give player a boost
+      }
+    }
+  }
+}
