@@ -1,0 +1,47 @@
+public class Player {
+  float playerY, playerX, jumpForce, doubleJumpForce, gravity, velocity;
+  boolean jumping, doubleJump;
+
+  public void initialize() {
+    playerX = 10;
+    playerY = 450;
+    gravity = 1;
+    doubleJumpForce = -15;
+    jumpForce = -15;
+    velocity = 0;
+    jumping = false;
+    doubleJump = false;
+  }
+
+  public void show() {
+    velocity += gravity;
+    playerY += velocity;
+
+    if (playerY >= 450) {
+      playerY = 450;
+      velocity = 0;
+      jumping = false;
+      doubleJump = false; // Reset double jump when grounded
+    }
+
+    fill(0, 0, 255);
+    rect(playerX, playerY, 50, 50);
+    fill(0, 255, 0);
+    rect(playerX + 10, playerY + 5, 10, 10);
+    rect(playerX + 30, playerY + 5, 10, 10);
+  }
+
+  public void jump() {
+    if (!jumping) {
+      velocity = jumpForce;
+      jumping = true;
+    }
+  }
+
+  public void doubleJump() {
+    if (jumping && !doubleJump) {
+      velocity = doubleJumpForce;
+      doubleJump = true;
+    }
+  }
+}
