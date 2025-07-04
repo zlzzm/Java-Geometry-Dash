@@ -1,84 +1,95 @@
-Player player;
-Enemy enemies;
-Orb orb;
-Platforms platform;
 float objectSpeed = 10;
 int score = 0;
 boolean waitingForGameToStart;
 
+Player player;
+Enemy enemies;
+Orb orb;
+Platforms platform;
+
 void setup() {
+  size(1500, 1000);
   waitingForGameToStart = true;
-  size(900, 500);
+
   player = new Player();
   player.initialize();
 
   enemies = new Enemy(objectSpeed);
-  orb = new Orb(objectSpeed);  // ✅ Add this line
+  orb = new Orb(objectSpeed);
+  platform = new Platforms(objectSpeed, player, enemies, orb);
 }
 
 void draw() {
-  background(0);  // clear background first
+  background(0);
 
   if (waitingForGameToStart) {
     fill(255);
     textSize(50);
-    textAlign(250, 250);
-    text("Press Key To Start", 250, 250);
+    textAlign(CENTER, CENTER);
+    text("Click to start", width / 2, height / 2);
   } else {
-    // Your game logic here
-    for (int i = 0; i < enemies.numEnemies; i++) {
-      if (!enemies.scored[i] && enemies.enemyX[i] < player.playerX) {
-        score += 1;
-        enemies.scored[i] = true;  // mark as scored so it doesn't score again
-      }
-    }
+    platform.show();
+    platform.playerCheck();
 
-    for (int a = 0; a < orb.numOrb; a++) {
-      float dx = orb.orbX[a] - (player.playerX + 25);
-      float dy = orb.orbY[a] - (player.playerY + 25);
+
+    player.show();
+
+    enemies.updatePlayerPosition(player.playerX, player.playerY);
+    enemies.show();
+
+    orb.updatePlayerPos(player.playerX, player.playerY);
+    orb.show();
+
+    for (int i = 0; i < orb.numOrb; i++) {
+      float dx = orb.orbX[i] - (player.playerX + 25);
+      float dy = orb.orbY[i] - (player.playerY + 25);
       float distance = sqrt(dx*dx + dy*dy);
 
       if (distance < 30) {
-        orb.orbBoost(a);
+        orb.orbBoost(i, player);
       }
     }
 
-    player.show();
-    enemies.updatePlayerPosition(player.playerX, player.playerY);
-    enemies.show();
-    fill(0);
-    orb.show();
-    orb.updatePlayerPos(player.playerX, player.playerY);
+    for (int i = 0; i < enemies.numEnemies; i++) {
+      if (!enemies.scored[i] && enemies.enemyX[i] < player.playerX) {
+        score++;
+        enemies.scored[i] = true;
+      }
+    }
 
     fill(255, 0, 0);
-    textSize(200);
-    text(score, 10, 200);
+    textSize(100);
+    text(score, 100, 50);
   }
 }
 
 void keyPressed() {
-  if (waitingForGameToStart == true)
-  {
-    waitingForGameToStart = false;
+  if (waitingForGameToStart) {
+    return;
   } else {
     if (key == ' ') {
       if (!player.jumping) {
-        player.jump();        // First jump if not already jumping
+        player.jump();
       } else {
-        player.doubleJump();  // Double jump if already in the air
+        player.doubleJump();
       }
     }
   }
 }
+
 void mouseClicked() {
-  player.jump();
+  if (waitingForGameToStart) {
+    waitingForGameToStart = false;
+  } else {
+    player.jump();
+  }
 }
 
 void lose() {
   background(0);
-  background(0);
-  textSize(200);
+  textSize(100);
   fill(255);
-  text("You lose", 100, 200);
+  textAlign(CENTER, CENTER);
+  text("You lose!", width / 2, height / 2);
   noLoop();
 }
