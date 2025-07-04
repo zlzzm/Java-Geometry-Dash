@@ -4,39 +4,50 @@ class Platforms {
   float[] platY;
   float platSpeed;
   int platNum;
-  private float playerX;
-  private float playerY;
+  float platWidth = 100;  // smaller platform width
+  float platHeight = 20;  // platform height
 
-  Platforms(float platSpeed) {
+  Platforms(float platSpeed, Player player, Enemy enemies, Orb orb) {
     this.platSpeed = platSpeed;
-    platNum = 5;
+    this.player = player;
+
+    platNum = 3;  // fewer platforms
     platX = new float[platNum];
     platY = new float[platNum];
 
     for (int i = 0; i < platNum; i++) {
-      platX[i] = width + i * 300 + int(random(100));
-      platY[i] = 490;
+      platX[i] = width + i * 400 + random(100);
+      // spawn platforms at random heights between 300 and 430 (taller platforms)
+      platY[i] = random(900, 830);
     }
   }
 
-  void show(float rectWidth, float rectHeight) {
+  void show() {
     fill(0, 0, 255);
     for (int i = 0; i < platNum; i++) {
       platX[i] -= platSpeed;
-      rect(platX[i], platY[i], rectWidth, rectHeight);
+      if (platX[i] < -platWidth) {
+        platX[i] = width + random(200, 600);
+        platY[i] = random(300, 430); // respawn higher, not colliding with spikes or orbs
+      }
+      rect(platX[i], platY[i], platWidth, platHeight);
     }
   }
-  void updatePlayerPos() {
-    playerX = player.playerX;
-    playerY = player.playerY;
-  }
+
   void playerCheck() {
-    for (int i = 0; i == platNum; i++)
-    {
-      updatePlayerPos();
-      if (playerX + 50 >= platX[i] && playerY == platY[i])
-      {
-        player.restrictY = platY[i];
+    // Check if player is landing on any platform
+    for (int i = 0; i < platNum; i++) {
+      // Check horizontal overlap with platform
+      boolean withinX = player.playerX + 50 > platX[i] && player.playerX < platX[i] + platWidth;
+      // Check if player is falling onto platform (player’s feet just above platform's top)
+      boolean closeY = player.playerY + 50 >= platY[i] && player.playerY + 50 <= platY[i] + 10;
+
+      if (withinX && closeY && player.velocity >= 0) {
+        // Snap player on top of platform
+        player.playerY = platY[i] - 50;  // 50 is player height
+        player.velocity = 0;
+        player.jumping = false;
+        player.doubleJump = false;
       }
     }
   }
