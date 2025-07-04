@@ -8,31 +8,31 @@ public class Orb {
   float playerX;
   float playerY;
 
+  Player player;
+
   public Orb(float orbSpeed) {
+    this.orbSpeed = orbSpeed;
     orbX = new float[numOrb];
     orbY = new float[numOrb];
     orbSpawnDelay = new int[numOrb];
     orbSpawnTimer = new int[numOrb];
-    this.orbSpeed = orbSpeed;
 
     for (int i = 0; i < numOrb; i++) {
       orbX[i] = width + i * 300 + int(random(100));
-      orbY[i] = 450;
+      orbY[i] = 950;
       orbSpawnDelay[i] = int(random(90, 180));
       orbSpawnTimer[i] = orbSpawnDelay[i];
     }
   }
 
   void show() {
-    fill(255, 255, 255);
+    fill(255);
     for (int i = 0; i < numOrb; i++) {
       if (orbSpawnTimer[i] <= 0) {
         orbX[i] -= orbSpeed;
       } else {
         orbSpawnTimer[i]--;
       }
-
-      // Reset orb if it goes off screen
       if (orbX[i] < -50) {
         orbX[i] = width + int(random(200, 600));
         orbSpawnTimer[i] = int(random(30, 120));
@@ -47,10 +47,8 @@ public class Orb {
     playerY = py;
   }
 
-  void orbBoost(int i) {
-    player.jump();
-
-    // Reset the orb so it disappears and respawns later:
+  void orbBoost(int i, Player player) {
+    player.orbJump();
     orbX[i] = width + int(random(200, 600));
     orbSpawnTimer[i] = int(random(30, 120));
   }
