@@ -75,7 +75,7 @@ public class Enemy {
       if (enemyX[i] < playerX + 50 &&
           enemyX[i] + 50 > playerX &&
           enemyY[i] == playerY) {
-        lose(); // ⚠️ Define this elsewhere
+        lose(); 
       }
 
       if (enemyX[i] == playerX + 50 && !scored[i]) {
