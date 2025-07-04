@@ -14,8 +14,20 @@ public class Enemy {
   public Enemy(float objectSpeed) {
     scored = new boolean[numEnemies];
     for (int i = 0; i < numEnemies; i++) {
-      scored[i] = false;
+  float newX;
+  boolean tooClose;
+  do {
+    tooClose = false;
+    newX = width + int(random(200, 600));
+    for (int j = 0; j < i; j++) {
+      if (abs(newX - enemyX[j]) < 100) {
+        tooClose = true;
+        break;
+      }
     }
+  } while (tooClose);
+  enemyX[i] = newX;
+
     this.objectSpeed = objectSpeed;
 
     enemyX = new float[numEnemies];
