@@ -20,21 +20,8 @@ public class Enemy {
     scored = new boolean[numEnemies];
 
     for (int i = 0; i < numEnemies; i++) {
-      float newX;
-      boolean tooClose;
-      do {
-        tooClose = false;
-        newX = width + int(random(200, 600));
-        for (int j = 0; j < i; j++) {
-          if (abs(newX - enemyX[j]) < 100) {
-            tooClose = true;
-            break;
-          }
-        }
-      } while (tooClose);
-
-      enemyX[i] = newX;
-      enemyY[i] = 450;
+      enemyX[i] = width + int(random(200, 600));
+      enemyY[i] = 900;
       spawnDelay[i] = int(random(30, 120));
       spawnTimer[i] = spawnDelay[i];
       scored[i] = false;
@@ -55,36 +42,19 @@ public class Enemy {
       }
 
       if (enemyX[i] < -50) {
-        float newX;
-        boolean tooClose;
-        do {
-          tooClose = false;
-          newX = width + int(random(200, 600));
-          for (int j = 0; j < numEnemies; j++) {
-            if (j != i && abs(newX - enemyX[j]) < 100) {
-              tooClose = true;
-              break;
-            }
-          }
-        } while (tooClose);
-
-        enemyX[i] = newX;
+        enemyX[i] = width + int(random(200, 600));
         spawnTimer[i] = int(random(30, 120));
         scored[i] = false;
       }
-      if (enemyX[i] < playerX + 50 &&
-          enemyX[i] + 50 > playerX &&
-          enemyY[i] == playerY) {
-        exit(); 
-      }
 
-      if (enemyX[i] == playerX + 50 && !scored[i]) {
-        score += 1;
-        scored[i] = true; 
+      if (enemyX[i] < playerX + 50 &&
+        enemyX[i] + 50 > playerX &&
+        enemyY[i] == playerY) {
+        lose();
       }
 
       fill(255, 0, 0);
-      triangle(enemyX[i], 500, enemyX[i] + 25, 450, enemyX[i] + 50, 500);
+      triangle(enemyX[i], 1000, enemyX[i] + 25, 950, enemyX[i] + 50, 1000);
     }
   }
 }
